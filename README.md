@@ -11,7 +11,7 @@ The Motivation for this small Project was to get a deeper understanding in codin
 
 ## Output 
 
-```json
+```
 {
   protocol: "https",
   sub_domain: ["abc"],
