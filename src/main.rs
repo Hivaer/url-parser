@@ -11,8 +11,21 @@ enum UrlParser {
 }
 
 fn main() {
+    let input_url = "https://abc.example.com:443/path/:wildcard/index.html?foo=bar&biz=fiz#fragment";
     let mut url = Url::new();
-    println!("{:?}", url.from_raw("https://abc.example.com:443/path/:wildcard/index.html?foo=bar&biz=fiz#fragment"));
+    url.from_raw(input_url);
+
+    println!("===================================INPUT============================================");
+    println!("\n {} \n", input_url);
+    println!("===================================OUTPUT===========================================");
+    println!("protocol: {}", url.protocol);
+    println!("sub_domain: {:?}", url.sub_domain);
+    println!("domain: {}", url.domain);
+    println!("top_level_domain: {}", url.top_level_domain);
+    println!("port: {}", url.port);
+    println!("path: {:?}", url.path);
+    println!("query: {:?}", url.query);
+    println!("fragment: {}", url.fragment);
 }
 
 #[derive(Debug)]
@@ -76,11 +89,8 @@ impl Url {
                 UrlParser::Domain => match current {
                     '.' => {
                         if self.domain.is_empty() {
-                            println!("Set Domain to: {parameter}");
                             Url::assign_value(&mut self.domain, &mut parameter);
                         } else {
-                            println!("Set subdomain to: {}", self.domain);
-                            println!("Set Domain to: {parameter}");
                             Url::assign_vector_value(&mut self.sub_domain, &mut self.domain);
                             Url::assign_value(&mut self.domain, &mut parameter);
                         }
@@ -88,8 +98,6 @@ impl Url {
                     },
                     ':' => {
                         if !self.domain.is_empty() {
-                            println!("Set TLD to: {parameter}");
-
                             Url::assign_value(&mut self.top_level_domain, &mut parameter);
                             state = UrlParser::Port;
                         }
@@ -99,10 +107,8 @@ impl Url {
 
                         if i == str.as_bytes().len()-1 {
                             if !self.domain.is_empty() {
-                                println!("Set TLD to: {parameter}");
                                 Url::assign_value(&mut self.top_level_domain, &mut parameter);
                             } else {
-                                println!("Set Domain to: {parameter}");
                                 Url::assign_value(&mut self.domain, &mut parameter);
                             }
                         }
@@ -110,17 +116,14 @@ impl Url {
                 },
                 UrlParser::Port => match current {
                     '/' => {
-                        println!("Set port to: {parameter}");
                         Url::assign_value(&mut self.port, &mut parameter);
                         state = UrlParser::Path;
                     },
                     '?' => {
-                        println!("Set port to: {parameter}");
                         Url::assign_value(&mut self.port, &mut parameter);
                         state = UrlParser::Query;
                     },
                     '#' => {
-                        println!("Set port to: {parameter}");
                         Url::assign_value(&mut self.port, &mut parameter);
                         state = UrlParser::Fragment;
                     }
@@ -128,23 +131,19 @@ impl Url {
                         parameter.push(current);
 
                         if i == str.as_bytes().len()-1 {
-                            println!("Set port to: {parameter}");
                             Url::assign_value(&mut self.port, &mut parameter);
                         }
                     }
                 },
                 UrlParser::Path => match current {
                     '/' => {
-                        println!("add to path: {parameter}");
                         Url::assign_vector_value(&mut self.path, &mut parameter);
                     },
                     '?' => {
-                        println!("add to path: {parameter}");
                         Url::assign_vector_value(&mut self.path, &mut parameter);
                         state = UrlParser::Query;
                     },
                     '#' => {
-                        println!("add to path: {parameter}");
                         Url::assign_vector_value(&mut self.path, &mut parameter);
                         state = UrlParser::Fragment;
                     }
@@ -152,7 +151,6 @@ impl Url {
                 },
                 UrlParser::Query => match current {
                     '&' | '#' => {
-                        println!("add to query: {parameter}");
                         self.assign_query_values( &mut parameter);
 
                         if current == '#' {
@@ -163,7 +161,6 @@ impl Url {
                         parameter.push(current);
 
                         if i == str.as_bytes().len()-1 {
-                            println!("add to query: {parameter}");
                             self.assign_query_values(&mut parameter);
                         }
                     }
