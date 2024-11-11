@@ -11,6 +11,22 @@ The Motivation for this small Project was to get a deeper understanding in codin
 
 ## Output 
 
-```
-{ protocol: "https", sub_domain: ["abc"], domain: "example", top_level_domain: "com", port: "443", path: ["path", ":wildcard", "index.html"], query: {"foo": "bar", "biz": "fiz"}, fragment: "fragment" }
+```json
+{
+  protocol: "https",
+  sub_domain: ["abc"],
+  domain: "example",
+  top_level_domain: "com",
+  port: "443",
+  path: [
+    "path",
+    ":wildcard",
+    "index.html"
+  ],
+  query: {
+    "foo": "bar",
+    "biz": "fiz"
+  },
+  fragment: "fragment"
+}
 ```
